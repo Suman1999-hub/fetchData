@@ -1,4 +1,4 @@
-let url = "https://reqres.in/api/users?delay=3";
+let url = "https://reqres.in/api/users";
 let currentEditId = null;
 
 const dip = async function dataFunc() {
@@ -48,26 +48,58 @@ function editBtn(id) {
   modal.style.display = "block";
 }
 
-function deleteBtn(id) {
-  let row = document.getElementById(`data1${id}`);
-  row.remove();
+async function deleteBtn(id) {
+  try {
+    const res = await fetch(`${url}/${id}`, {
+      method: "DELETE",
+    });
+    console.log(res.status);
+    if (res.status === 204) {
+      let row = document.getElementById(`data1${id}`);
+      row.remove();
+      console.log("delete successfully");
+    } else {
+      console.log("Fail");
+    }
+  } catch (e) {
+    console.log(e);
+  }
 }
 
-function saveChanges() {
+async function saveChanges() {
   let firstName = document.getElementById("firstName").value;
   let lastName = document.getElementById("lastName").value;
   let email = document.getElementById("email").value;
 
   if (currentEditId !== null) {
-    let row = document.getElementById(`data1${currentEditId}`);
-    let col = row.getElementsByTagName("td");
-    col[3].innerText = firstName;
-    col[4].innerText = lastName;
-    col[2].innerText = email;
-  }
+    try {
+      const res = await fetch(`${url}/${currentEditId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+        }),
+      });
+      if (res.ok) {
+        let row = document.getElementById(`data1${currentEditId}`);
+        let col = row.getElementsByTagName("td");
+        col[3].innerText = firstName;
+        col[4].innerText = lastName;
+        col[2].innerText = email;
 
-  let modal = document.getElementById("editModal");
-  modal.style.display = "none";
+        let modal = document.getElementById("editModal");
+        modal.style.display = "none";
+      } else {
+        console.log("Failed update");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
 
 var modal = document.getElementById("editModal");
