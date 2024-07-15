@@ -80,6 +80,16 @@ button {
     border-radius: 10px;
     border: none;
 }
+.loading {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: blue;
+}
 
 @media screen and (max-width: 600px) {
     .modal-content {
